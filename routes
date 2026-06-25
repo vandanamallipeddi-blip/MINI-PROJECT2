@@ -1,0 +1,98 @@
+const express = require("express");
+const router = express.Router();
+
+const Food = require("../models/food");
+
+// Add Food
+router.post("/", async (req, res) => {
+    try {
+        const food = await Food.create(req.body);
+
+        res.status(201).json({
+            success: true,
+            message: "Food Added Successfully",
+            data: food
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Get All Foods
+router.get("/", async (req, res) => {
+    try {
+        const foods = await Food.find();
+
+        res.status(200).json({
+            success: true,
+            count: foods.length,
+            data: foods
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Get Single Food
+router.get("/:id", async (req, res) => {
+    try {
+        const food = await Food.findById(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            data: food
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Update Food
+router.put("/:id", async (req, res) => {
+    try {
+        const food = await Food.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Food Updated Successfully",
+            data: food
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Delete Food
+router.delete("/:id", async (req, res) => {
+    try {
+        await Food.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: "Food Deleted Successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+module.exports = router;
